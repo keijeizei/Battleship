@@ -309,12 +309,12 @@ def cpuSetUp():
                             lengthAdjuster = 0
 
                         for i in range(0, shipSizeDict[currentShip]):
-                            cpuBoard[cpuRow + i][cpuCol] = currentShip    #generate the ship
+                            cpuBoard[cpuRow + i][cpuCol] = currentShip          #generate the ship
                         currentShip += 1
 
             #ship is vertical upward
             if genDirection == 1:
-                if cpuRow - shipSizeDict[currentShip] - 1 >= 0:           #check if ship will not go out of bounds
+                if cpuRow - shipSizeDict[currentShip] - 1 >= 0:                 #check if ship will not go out of bounds
                     for i in range(1, shipSizeDict[currentShip]):
                         emptyVerifier += cpuBoard[cpuRow - i][cpuCol]           #check spaces if empty
 
@@ -326,12 +326,12 @@ def cpuSetUp():
                             lengthAdjuster = 0
 
                         for i in range(0, currentShip + lengthAdjuster):
-                            cpuBoard[cpuRow - i][cpuCol] = currentShip    #generate the ship
+                            cpuBoard[cpuRow - i][cpuCol] = currentShip          #generate the ship
                         currentShip += 1
             
             #ship is horizontal right
             elif genDirection == 2:
-                if cpuCol + shipSizeDict[currentShip] - 1 <= 9:           #check if ship will not go out of bounds
+                if cpuCol + shipSizeDict[currentShip] - 1 <= 9:                 #check if ship will not go out of bounds
                     for i in range(1, shipSizeDict[currentShip]):
                         emptyVerifier += cpuBoard[cpuRow][cpuCol + i]           #check spaces if empty
 
@@ -343,13 +343,13 @@ def cpuSetUp():
                             lengthAdjuster = 0
 
                         for i in range(0, currentShip + lengthAdjuster):
-                            cpuBoard[cpuRow][cpuCol + i] = currentShip    #generate the ship
+                            cpuBoard[cpuRow][cpuCol + i] = currentShip          #generate the ship
 
                         currentShip += 1
 
             #ship is horizontal left
             elif genDirection == 3:
-                if cpuCol - shipSizeDict[currentShip] - 1 >= 0:           #check if ship will not go out of bounds
+                if cpuCol - shipSizeDict[currentShip] - 1 >= 0:                 #check if ship will not go out of bounds
                     for i in range(1, shipSizeDict[currentShip]):
                         emptyVerifier += cpuBoard[cpuRow][cpuCol - i]           #check spaces if empty
 
@@ -361,7 +361,7 @@ def cpuSetUp():
                             lengthAdjuster = 0
 
                         for i in range(0, currentShip + lengthAdjuster):
-                            cpuBoard[cpuRow][cpuCol - i] = currentShip    #generate the ship
+                            cpuBoard[cpuRow][cpuCol - i] = currentShip          #generate the ship
                         currentShip += 1
 
 #---------------------------------------------CALCULATOR AND EVALUATOR FUNCTIONS
@@ -383,7 +383,7 @@ def sinkShipChecker(board, evalmode):
     ship3exist = "\033[1;32;40m◙\033[1;37;40m"
     ship4exist = "\033[1;32;40m■\033[1;37;40m"
     ship5exist = "\033[1;32;40m≡\033[1;37;40m"
-    for line in board:                  #iterate through the board to tally the ships count
+    for line in board:                      #iterate through the board to tally the ships count
         for element in line:
             if element == 1:
                 ship1count += 1
@@ -525,6 +525,7 @@ def saveBoard():
 
 #---------------------------------------------GAME MANAGEMENT FUNCTIONS
 def mainMenu():
+    invalidInput = False
     while True:                                 #loop until a return statement is executed
         clearScreen()
         printTitle()
@@ -536,6 +537,9 @@ def mainMenu():
         print(" [4] SEE IF MY AI IS SMART")
         print(" [0] QUIT")
         print()
+        if invalidInput == True:
+            print("\033[1;31;40mInvalid input.\033[1;37;40m Enter only 1, 2, 3, 4, or 0.")
+
         choice = input("Enter choice: ")
         if choice == "1":
             clearScreen()
@@ -564,8 +568,7 @@ def mainMenu():
             if quitChoice == "Y":
                 quit()
         else:
-            print("Invalid input. Enter only 1, 2, 3, 4, or 0.")
-            time.sleep(1)
+            invalidInput = True
         print()
 
 def mainGame():
@@ -655,14 +658,31 @@ def mainGame():
         elif playerLose:
             printCPUBoard()
             printPlayerBoard()
-            print("\033[1;31;40mALL YOUR SHIPS HAVE SUNK! IT'S GAME OVER.\033[1;37;40m Let's play again!")
+            print("\033[1;31;40m")
+            print(" ██████╗  █████╗ ███╗   ███╗███████╗     ██████╗ ██╗   ██╗███████╗██████╗ ")
+            print("██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔═══██╗██║   ██║██╔════╝██╔══██╗")
+            print("██║  ███╗███████║██╔████╔██║█████╗      ██║   ██║██║   ██║█████╗  ██████╔╝")
+            print("██║   ██║██╔══██║██║╚██╔╝██║██╔══╝      ██║   ██║╚██╗ ██╔╝██╔══╝  ██╔══██╗")
+            print("╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗    ╚██████╔╝ ╚████╔╝ ███████╗██║  ██║")
+            print(" ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝     ╚═════╝   ╚═══╝  ╚══════╝╚═╝  ╚═╝")
+            print("\033[1;37;40m")
+            print("OH NO! ALL YOUR SHIPS HAVE SUNK! Let's play again!")
             os.remove("savefile.txt")                                               #deletes the save file
             break
         elif cpuLose:
             printLine(2)
             printCPUBoard()
             printPlayerBoard()
-            print("\033[1;32;40mYOU WIN!\033[1;37;40m You took", bombs, "bombs to beat the computer!")
+            print("\033[1;32;40m")
+            print("██╗   ██╗ ██████╗ ██╗   ██╗    ██╗    ██╗██╗███╗   ██╗")
+            print("╚██╗ ██╔╝██╔═══██╗██║   ██║    ██║    ██║██║████╗  ██║")
+            print(" ╚████╔╝ ██║   ██║██║   ██║    ██║ █╗ ██║██║██╔██╗ ██║")
+            print("  ╚██╔╝  ██║   ██║██║   ██║    ██║███╗██║██║██║╚██╗██║")
+            print("   ██║   ╚██████╔╝╚██████╔╝    ╚███╔███╔╝██║██║ ╚████║")
+            print("   ╚═╝    ╚═════╝  ╚═════╝      ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝")
+            print("\033[1;37;40m")
+            print("GOOD JOB! You took", bombs, "bombs to beat the computer!")
+            print("Let's put your name on the leaderboard!")
             while True:
                 username = input("What is your name? ")
                 if len(username) < 32 and ", " not in username:
@@ -674,6 +694,7 @@ def mainGame():
             if username == "":
                 username = "Anonymous"
             highScore(username, bombs, 0)
+            print()
             print(f"Thank you for playing, {username}. Your score has been saved!")
             os.remove("savefile.txt")                                               #deletes the save file
             break
@@ -764,7 +785,6 @@ def cpuAI():
     # four adjacent tiles around the bombed ship.
     # Once Hunt mode parity is no longer viable, it switches to Hunt mode brute force (2) where
     # it randomly choose a tile to clean any remaining ship parts.
-
     while turn % 2 == 1:
         if stratMode == 0:
             # HUNT MODE
@@ -812,7 +832,6 @@ def cpuAI():
             # TARGET MODE
             # Target mode attacks the adjacent tiles of the bombed tile of hunt mode.
             # Once it miss, it will attack the next adjacent tile until all four directions are bombed
-
             if targetDirection == 0:        #bottom of most recent bombed tile
                 rowHit += 1
             elif targetDirection == 1:      #top of most recent bombed tile
@@ -954,7 +973,7 @@ def rowConvert(input):
             output = output[0]
             return output
 
-#------------------------------------DECLARE VARIABLES-----------------------------------
+#---------------------------------------------DECLARE VARIABLES
 def resetVars():
     #reset variables at the start of a new game
     global gamePhase
@@ -1008,5 +1027,3 @@ currentShip = 1                     #current ship for player and cpu preparation
 
 #----------------------------------------MAIN GAME---------------------------------------
 mainMenu()
-
-pause = input("bruh")

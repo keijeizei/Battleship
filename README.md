@@ -8,6 +8,6 @@ their ships on their grid. During each round a player announces the target coord
 opponent’s grid to be shot at. A player wins when all the opponent’s ships have been sunk.
 
 Must include:
-❏ Saving and loading the current state of the game using files
-❏ File implementation for high scores
-❏ A smart AI opponent
+-Saving and loading the current state of the game using files
+-File implementation for high scores
+-A smart AI opponent

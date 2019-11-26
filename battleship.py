@@ -52,11 +52,11 @@ shipSizeDict = {
 
 #shipLooks is a dictionary that keeps the appearance of the ships
 shipLooks = {
-    1: "○ ○",
-    2: "◘ ◘ ◘",
-    3: "◙ ◙ ◙",
-    4: "■ ■ ■ ■",
-    5: "≡ ≡ ≡ ≡ ≡"
+    1: "\033[1;32;40m○ ○\033[1;37;40m",
+    2: "\033[1;32;40m◘ ◘ ◘\033[1;37;40m",
+    3: "\033[1;32;40m◙ ◙ ◙\033[1;37;40m",
+    4: "\033[1;32;40m■ ■ ■ ■\033[1;37;40m",
+    5: "\033[1;32;40m≡ ≡ ≡ ≡ ≡\033[1;37;40m"
 }
 
 playerBoard = [
@@ -123,10 +123,10 @@ def shipBuilder(startR, startC, endR, endC):
             elif buildDirection == 3:
                 playerBoard[startR][startC - i] = currentShip
         
-        print(shipDict[currentShip], "deployed successfully.")
+        print(f" • \033[1;32;40m{shipDict[currentShip]}\033[1;37;40m deployed successfully.")
         currentShip += 1
     else:
-        print("Ship should be", shipSizeDict[currentShip], "tiles long do not overlap other ships.")
+        print(f" • Ship should be \033[1;31;40m{shipSizeDict[currentShip]}\033[1;37;40m tiles long do not overlap other ships.")
 
 def printPlayerBoard():
     rowCount = 0
@@ -137,21 +137,21 @@ def printPlayerBoard():
         print("", rowConvert(rowCount), end=" ")                    #prints the rows
         while colCount < 10:
             if playerBoard[rowCount][colCount] == 0:                #unoccupied space
-                print("·", end=" ")
+                print("\033[1;34;40m·\033[1;37;40m", end=" ")
             elif playerBoard[rowCount][colCount] == 1:              #1st ship occupies
-                print("○", end=" ")
+                print("\033[1;32;40m○\033[1;37;40m", end=" ")
             elif playerBoard[rowCount][colCount] == 2:              #2nd ship occupies
-                print("◘", end=" ")
+                print("\033[1;32;40m◘\033[1;37;40m", end=" ")
             elif playerBoard[rowCount][colCount] == 3:              #3rd ship occupies
-                print("◙", end=" ")
+                print("\033[1;32;40m◙\033[1;37;40m", end=" ")
             elif playerBoard[rowCount][colCount] == 4:              #4th ship occupies
-                print("■", end=" ")
+                print("\033[1;32;40m■\033[1;37;40m", end=" ")
             elif playerBoard[rowCount][colCount] == 5:              #5th ship occupies
-                print("≡", end=" ")
+                print("\033[1;32;40m≡\033[1;37;40m", end=" ")
             elif playerBoard[rowCount][colCount] == -1:             #bombed sea occupies
-                print("*", end=" ")
+                print("\033[1;35;40m*\033[1;37;40m", end=" ")
             elif playerBoard[rowCount][colCount] == -2:             #bombed ship occupies
-                print("X", end=" ")
+                print("\033[1;31;40m♦\033[1;37;40m", end=" ")
             colCount += 1
         print()
         rowCount += 1
@@ -184,27 +184,27 @@ def printCPUBoard():
                 print("♦", end=" ")
             """
             if cpuBoard[rowCount][colCount] > -1:                   #sea or hidden ship
-                print("·", end=" ")
+                print("\033[1;34;40m·\033[1;37;40m", end=" ")
             elif cpuBoard[rowCount][colCount] == -1:                #bombed sea occupies
-                print("*", end=" ")
+                print("\033[1;35;40m*\033[1;37;40m", end=" ")
             elif cpuBoard[rowCount][colCount] == -2:                #bombed ship occupies
-                print("♦", end=" ")
+                print("\033[1;31;40m♦\033[1;37;40m", end=" ")
             colCount += 1
         print()
         rowCount += 1
 
 def playerSetUp():
     noEndpoint = False      #to catch the no possible endpoint error
-    printLine()
-    print("PREPARATION PHASE")
-    printLine()
-    print("Place your ships by specifying the two ends of the ship.")
-    printLine()
+    printLine(0)
+    print("                                   PREPARATION PHASE")
+    printLine(1)
+    print(" • Place your ships by specifying the two ends of the ship.")
+    printLine(2)
     global currentShip
     while currentShip < 6:
         try:
             printPlayerBoard()
-            print("Place your", shipDict[currentShip], "ship on the board (a ship", shipSizeDict[currentShip], "tiles long)", shipLooks[currentShip])
+            print(f"Place your {shipDict[currentShip]} ship on the board (a ship {shipSizeDict[currentShip]} tiles long) {shipLooks[currentShip]}")
 
             startInput = input("Enter coordinates of the first end of the ship (ex. A1): ")
             if len(startInput) > 2:
@@ -258,7 +258,7 @@ def playerSetUp():
                 raise Exception()
 
             print()
-            print("Possible endpoints: " + possible1 + possible2 + possible3 + possible4)
+            print(f"Possible endpoints: \033[1;32;40m{possible1}{possible2}{possible3}{possible4}\033[1;37;40m")
             endInput = input("Enter coordinates of the other end of the ship (ex. A2): ")
             if len(endInput) > 2:
                 raise Exception()
@@ -270,21 +270,21 @@ def playerSetUp():
             if playerBoard[endR][endC] > 0:         #already occupied
                 raise Exception()
             clearScreen()
-            printLine()
-            print("PREPARATION PHASE")
-            printLine()
+            printLine(0)
+            print("                                   PREPARATION PHASE")
+            printLine(1)
             shipBuilder(startR, startC, endR, endC)
-            printLine()
+            printLine(2)
         except:                                     #if an error is raised, it means that coord is invalid
             clearScreen()
-            printLine()
-            print("PREPARATION PHASE")
-            printLine()
+            printLine(0)
+            print("                                   PREPARATION PHASE")
+            printLine(1)
             if noEndpoint:
-                print("The coordinate you picked have no possible endpoints.")
+                print(" • \033[1;31;40mThe coordinate you picked has no possible endpoints.\033[1;37;40m")
             else:
-                print("Invalid coordinate or coordinate already occupied.")
-            printLine()
+                print(" • \033[1;31;40mInvalid coordinate or coordinate already occupied.\033[1;37;40m")
+            printLine(2)
         
 def cpuSetUp():
     global currentShip
@@ -368,21 +368,21 @@ def cpuSetUp():
 def sinkShipChecker(board, evalmode):
     """
     board argument takes playerBoard or cpuBoard
-    evalmode argument:
-    0 = ship printer
-    1 = lose evaluator
-    2 = ship left counter
+    evalmode argument takes:
+    0 = prints the ships left in the game interface
+    1 = evaluates whether player or cpu lost
+    2 = returns a list of ships left
     """
     ship1count = 0
     ship2count = 0
     ship3count = 0
     ship4count = 0
     ship5count = 0
-    ship1exist = "○"
-    ship2exist = "◘"
-    ship3exist = "◙"
-    ship4exist = "■"
-    ship5exist = "≡"
+    ship1exist = "\033[1;32;40m○\033[1;37;40m"
+    ship2exist = "\033[1;32;40m◘\033[1;37;40m"
+    ship3exist = "\033[1;32;40m◙\033[1;37;40m"
+    ship4exist = "\033[1;32;40m■\033[1;37;40m"
+    ship5exist = "\033[1;32;40m≡\033[1;37;40m"
     for line in board:                  #iterate through the board to tally the ships count
         for element in line:
             if element == 1:
@@ -396,17 +396,17 @@ def sinkShipChecker(board, evalmode):
             if element == 5:
                 ship5count += 1
     if evalmode == 0:                       #ship printer
-        if ship1count == 0:                 #if no part of the ship are found
-            ship1exist = " "
+        if ship1count == 0:                 #if no part of the ship are found, make color red
+            ship1exist = "\033[0;31;40m○\033[1;37;40m"
         if ship2count == 0:
-            ship2exist = " "
+            ship2exist = "\033[0;31;40m◘\033[1;37;40m"
         if ship3count == 0:
-            ship3exist = " "
+            ship3exist = "\033[0;31;40m◙\033[1;37;40m"
         if ship4count == 0:
-            ship4exist = " "
+            ship4exist = "\033[0;31;40m■\033[1;37;40m"
         if ship5count == 0:
-            ship5exist = " "
-        print("Ships:", ship1exist, ship2exist, ship3exist, ship4exist, ship5exist)
+            ship5exist = "\033[0;31;40m≡\033[1;37;40m"
+        print(f"Ships: {ship1exist} {ship2exist} {ship3exist} {ship4exist} {ship5exist}")
 
     elif evalmode == 1:                     #lose evaluator
         global cpuLose
@@ -417,24 +417,24 @@ def sinkShipChecker(board, evalmode):
         elif (ship1count + ship2count + ship3count + ship4count + ship5count) == 0 and board == playerBoard and gamePhase == 1:
             playerLose = True
     
-    elif evalmode == 2:                     #ship counter for AI
-        allShipCount = 0
+    elif evalmode == 2:                     #ship counter
+        shipLeftList = []
         if ship1count != 0:
-            allShipCount += 1
+            shipLeftList.append(1)
         if ship2count != 0:
-            allShipCount += 1
+            shipLeftList.append(2)
         if ship3count != 0:
-            allShipCount += 1
+            shipLeftList.append(3)
         if ship4count != 0:
-            allShipCount += 1
+            shipLeftList.append(4)
         if ship5count != 0:
-            allShipCount += 1
+            shipLeftList.append(5)
 
-        return allShipCount
+        return shipLeftList
 
 def hitRateCalculate(bombs):
     """
-    bombs argument is the number of bombs deployed
+    bombs argument takes the number of bombs deployed
     """
     hitrate = 0
     for i in range(10):
@@ -448,65 +448,70 @@ def hitRateCalculate(bombs):
     return hitrate
 
 #---------------------------------------------FILE HANDLING FUNCTIONS
-def highScore(score, mode):
+def highScore(username, score, mode):
     """
-    score argument is the score that will be saved
-    mode argument:
-    0 = save high score
+    username argument takes the name that will be saved. If you just want to print scores, just put None
+    score argument takes the score that will be saved. If you just want to print scores, just put None
+    mode argument takes:
+    0 = save a high score
     1 = print the high scores
     """
     try:                                                        #try if file exists
         highScore = open("highscore.txt", "r")
-        highScoreList = highScore.read()
-        highScoreList = highScoreList.split(", ")
-        highScore.close()
     except:
         highScore = open("highscore.txt", "w+")                 #create the file if it doesn't exist
         highScore.close()
 
         highScore = open("highscore.txt", "r")                  #reads the file and create a list
-        highScoreList = highScore.read()
-        highScoreList = highScoreList.split(", ")
-        highScore.close()
+    
+    highScoreList = highScore.read()
+    highScoreList = highScoreList.split(", ")
+    highScore.close()
     highScoreList.pop(-1)                                       #pop the empty element [''] at the end of the list
-    for place in range(0, len(highScoreList)):
-        highScoreList[place] = int(highScoreList[place])        #convert to int
-    if mode == 0:
-        highScoreList.append(score)
-        highScoreList.sort()
 
-        highScore = open("highscore.txt", "w")
-        for namescore in highScoreList:
-            highScore.write(str(namescore) + ", ")
+    highScoreDict = {}                                          #score:name pair will be stored here
+    for i in range(len(highScoreList)):                         #fills up the dictionary
+        if i%2 == 0:
+            highScoreDict[highScoreList[i]] = highScoreList[i+1]
+        
+    if mode == 0:
+        highScoreDict[score] = username
+
+        highScore = open("highscore.txt", "w")                  #overwrites the file
+        for k, v in highScoreDict.items():
+            highScore.write(str(k) + ", ")
+            highScore.write(str(v) + ", ")
         highScore.close()
-        print("Your score has been saved!")
 
     if mode == 1:
         printTitle()
-        if len(highScoreList) == 0:
-            print("No scores yet. Play a new game now!")
+        if len(highScoreDict) == 0:
+            print("\033[1;31;40mNo scores yet.\033[1;37;40m Play a new game now!")
         else:
-            print("=================LEADERBOARDS=================")
-            for i in range(len(highScoreList)):
-                print(" ", i + 1, ": BOMBS FIRED:", highScoreList[i], "  HIT RATE:", round(17/highScoreList[i] * 100, 4), "%")
+            print("\033[1;30;40m╔═════════════════\033[1;37;40mLEADERBOARDS\033[1;30;40m═════════════════╗\033[1;37;40m")
+            highScoreCounter = 1
+            for k in sorted(highScoreDict.keys()):
+                print(f"  {highScoreCounter} : \033[1;36;40m{highScoreDict[k]}\033[1;37;40m")
+                print(f"       BOMBS FIRED: {k}   HIT RATE: {round(17/int(k) * 100, 4)} %")
+                highScoreCounter += 1
             highScore.close()
+            print("\033[1;30;40m╚══════════════════════════════════════════════╝\033[1;37;40m")
         print()
         input("Press Enter to go back to main menu.")
         mainMenu()
 
 def saveBoard():
-    global turn
     savefile = open("savefile.txt", "w+")
-    for row in range(10):
-        for col in range(10):
-            savefile.write(str(playerBoard[row][col]))      #index [0] to index [99]
+    for rowb in range(10):                                    #rowb and colb used to avoid confusion between row and col variables
+        for colb in range(10):
+            savefile.write(str(playerBoard[rowb][colb]))      #index [0] to index [99]
             savefile.write(", ")
-    for row in range(10):
-        for col in range(10):
-            savefile.write(str(cpuBoard[row][col]))         #index [100] to index [199]
+    for rowb in range(10):
+        for colb in range(10):
+            savefile.write(str(cpuBoard[rowb][colb]))         #index [100] to index [199]
             savefile.write(", ")
 
-    savefile.write(str(turn) + ", ")                        #turn is the 201st value (index [200])
+    savefile.write(str(turn) + ", ")                          #turn is the 201st value (index [200])
     savefile.write(str(stratMode) + ", ")
     savefile.write(str(targetDirection) + ", ")
     savefile.write(str(rowHit) + ", ")
@@ -517,16 +522,19 @@ def saveBoard():
 
     savefile.close()
 
+
 #---------------------------------------------GAME MANAGEMENT FUNCTIONS
 def mainMenu():
     while True:                                 #loop until a return statement is executed
         clearScreen()
         printTitle()
+        clearScreen()                           #the code is repeated to paint the background
+        printTitle()                            #it fixes the color bug in linux
         print(" [1] CONTINUE")
         print(" [2] NEW GAME")
         print(" [3] VIEW LEADERBOARDS")
         print(" [4] SEE IF MY AI IS SMART")
-        print(" [0] QUIT.")
+        print(" [0] QUIT")
         print()
         choice = input("Enter choice: ")
         if choice == "1":
@@ -539,7 +547,7 @@ def mainMenu():
             return
         elif choice == "3":
             clearScreen()
-            highScore(0, 1)
+            highScore(None, None, 1)
             return
         elif choice == "4":
             clearScreen()
@@ -568,16 +576,16 @@ def mainGame():
     global bombs
 
     #print the top bar when the game starts
-    printLine()
-    print("                     Bombs fired:", bombs, "| Hit rate:", hitRateCalculate(bombs), "%")
+    printLine(0)
+    print(f"                          Bombs fired: {bombs} | Hit rate: {hitRateCalculate(bombs)} %")
     if turn % 2 == 0:
-        printLine()
+        printLine(1)
         print(" • Your previous turns will appear here...")
-        printLine()
+        printLine(1)
         print(" • Computer's previous turns will appear here...")
-        printLine()
+        printLine(2)
     else:
-        printLine()
+        printLine(1)
         print(" • Your previous turns will appear here...")
 
     gamePhase = 1
@@ -591,10 +599,10 @@ def mainGame():
             turnInput = input(("Your turn. Enter the target coordinate (ex. A1): "))
 
             clearScreen()
-            printLine()
+            printLine(0)
             #because stats are printed before the move, bombs need to be bombs + 1
-            print("                     Bombs fired:", bombs + 1, "| Hit rate:", hitRateCalculate(bombs + 1), "%")
-            printLine()
+            print(f"                          Bombs fired: {bombs + 1} | Hit rate: {hitRateCalculate(bombs + 1)} %")
+            printLine(1)
 
             try:
                 if len(turnInput) != 2:                                         #input should be 2 characters long
@@ -610,60 +618,74 @@ def mainGame():
                         cpuBoard[row][col] = -2                                 #ship was bombed
 
                         clearScreen()
-                        printLine()
+                        printLine(0)
                         #because stats are printed before the move, bombs need to be bombs + 1
                         #re-print the stats again after bombing a tile to make hit rate accurate
-                        print("                     Bombs fired:", bombs + 1, "| Hit rate:", hitRateCalculate(bombs + 1), "%")
-                        printLine()
+                        print(f"                          Bombs fired: {bombs + 1} | Hit rate: {hitRateCalculate(bombs + 1)} %")
+                        printLine(1)
 
-                        print(" • You bombed " + turnInput + ". It's a hit!", end=" ")
-                        if sinkShipChecker(cpuBoard, 2) < cpuShipBefore:        #compare ships after bombing
-                            print("You sank one of your opponent's ships!")
+                        print(f" • You bombed \033[0;30;47m{turnInput}\033[1;37;40m. It's a \033[1;31;40mhit\033[1;37;40m!", end=" ")
+                        cpuShipAfter = sinkShipChecker(cpuBoard, 2)             #count ships after bombing
+                        if len(cpuShipAfter) < len(cpuShipBefore):              #a ship has been sunk
+                            print("\033[1;32;40mYou sank your opponent's ", end="")
+                            for ship in cpuShipBefore:
+                                if ship not in cpuShipAfter:
+                                    print(f"{shipDict[ship]}!\033[1;37;40m")
                         else:
                             print()
                         
                     elif cpuBoard[row][col] == 0:                               #if the target has no ship
-                        print(" • You bombed " + turnInput + ". It's a miss!")
+                        print(f" • You bombed \033[0;30;47m{turnInput}\033[1;37;40m. It's a miss!")
                         cpuBoard[row][col] = -1                                 #target has been hit
                     turn += 1
                     bombs += 1
                 else:
-                    print(" • No need to bomb the same location twice!")
-                    printLine()
+                    print(" • \033[1;31;40mNo need to bomb the same location twice!\033[1;37;40m")
+                    printLine(1)
                     print(" • You can pick another coordinate to bomb.")
-                    printLine()
+                    printLine(2)
             except:
-                print(" • Invalid coordinate. Enter a coordinate from A0 to J9.")
-                printLine()
+                print(" • \033[1;31;40mInvalid coordinate\033[1;37;40m. Enter a coordinate from A0 to J9.")
+                printLine(1)
                 print(" • You can pick another coordinate to bomb.")
-                printLine()
+                printLine(2)
 
         elif turn % 2 == 1 and cpuLose == False and playerLose == False:        #cpu's turn
             cpuAI()
         elif playerLose:
             printCPUBoard()
             printPlayerBoard()
-            print("All your ships have sunk. It's game over. Let's play again!")
+            print("\033[1;31;40mALL YOUR SHIPS HAVE SUNK! IT'S GAME OVER.\033[1;37;40m Let's play again!")
             os.remove("savefile.txt")                                               #deletes the save file
             break
         elif cpuLose:
-            printLine()
+            printLine(2)
             printCPUBoard()
             printPlayerBoard()
-            print("You win! You took", bombs, "bombs to beat the computer!")
-            highScore(bombs, 0)
+            print("\033[1;32;40mYOU WIN!\033[1;37;40m You took", bombs, "bombs to beat the computer!")
+            while True:
+                username = input("What is your name? ")
+                if len(username) < 32 and ", " not in username:
+                    break
+                elif len(username) >= 32:
+                    print("What a long name! \033[1;31;40mPlease enter a shorter one.\033[1;37;40m")
+                elif ", " in username:
+                    print("\033[1;31;40mPlease do not include ', ' in your name.\033[1;37;40m")
+            if username == "":
+                username = "Anonymous"
+            highScore(username, bombs, 0)
+            print(f"Thank you for playing, {username}. Your score has been saved!")
             os.remove("savefile.txt")                                               #deletes the save file
             break
     input("Press Enter to go back to main menu.")
     gamePhase = 0
     clearBoard()
-    
     mainMenu()      
 
 def continueGame():
-    loading()
     try:                                                                   #try if save file exists
         savefile = open("savefile.txt", "r")
+        loading()
         tempBoard = savefile.read()
         tempBoard = tempBoard.split(", ")
         for tile in range(100):                                            #load the playerBoard
@@ -688,11 +710,13 @@ def continueGame():
         col = int(tempBoard[207])
         savefile.close()
 
+        mainGame()
+
     except:                                                                 #start new game prep phase if save file doesn't exists
         clearScreen()
-        printLine()
+        printLine(0)
         print("Save file not found. A new game will be started.")
-        printLine()
+        printLine(2)
         time.sleep(1)
         #-----PLAYER PREPARATION PHASE
         newGame()
@@ -707,21 +731,23 @@ def newGame():
     currentShip = 1
     playerSetUp()
     printPlayerBoard()
-    printLine()
-    print("All ships deployed. Preparations complete.")
-    printLine()
+    printLine(0)
+    print("                      All ships deployed. Preparations complete.")
+    printLine(2)
     saveBoard()                                                             #auto save
     #-----PRE-BATTLE PHASE
     time.sleep(1)
-    print("The war has begun!")
+    print("  The war has begun!")
     time.sleep(1)
     if turn % 2 == 0:
-        print("You will have the first move.")
+        print("\033[1;32;40m  You\033[1;37;40m will have the first move.")
     else:
-        print("Computer will have the first move.")
+        print("\033[1;31;40m  Computer\033[1;37;40m will have the first move.")
     time.sleep(1)
-    input("Press Enter to enter the battlefield!")
+    input("  Press Enter to proceed to the battlefield!")
     clearScreen()
+    resetVars()
+    mainGame()
 
 #---------------------------------------------CPU AI FUNCTION
 def cpuAI():
@@ -751,13 +777,17 @@ def cpuAI():
                 col = col + 1
 
             if playerBoard[row][col] > -1:                                  #target has not been bombed yet
-                printLine()
+                printLine(1)
                 if playerBoard[row][col] > 0:                               #target has a ship
-                    print(" • Computer bombed " + str(rowDict[row]) +  str(col) + ". It's a hit!", end=" ")
+                    print(f" • Computer bombed \033[0;30;47m{str(rowDict[row])}{str(col)}\033[1;37;40m. It's a \033[1;31;40mhit\033[1;37;40m!", end=" ")
                     playerShipBefore = sinkShipChecker(playerBoard, 2)      #count ships before bombing
                     playerBoard[row][col] = -2                              #ship was bombed
-                    if sinkShipChecker(playerBoard, 2) < playerShipBefore:  #compare ships after bombing
-                        print("Computer sank one of your ships!")
+                    playerShipAfter = sinkShipChecker(playerBoard, 2)       #count ships after bombing
+                    if playerShipAfter < playerShipBefore:                  #a ship has been sunk
+                        print("\033[1;31;40mComputer sank your ", end="")
+                        for ship in playerShipBefore:
+                            if ship not in playerShipAfter:
+                                print(f"{shipDict[ship]}!\033[1;37;40m")
                     else:
                         print()
                     stratMode = 1                                           #switch to target mode
@@ -766,12 +796,12 @@ def cpuAI():
                     targetDirection = 0
 
                 elif playerBoard[row][col] == 0:                            #if the target has no ship
-                    print(" • Computer bombed " + str(rowDict[row]) +  str(col) + ". It's a miss!")
+                    print(f" • Computer bombed \033[0;30;47m{str(rowDict[row])}{str(col)}\033[1;37;40m. It's a miss!")
                     playerBoard[row][col] = -1                              #sea was bombed
                 
                 turn += 1
                 saveBoard()
-                printLine()
+                printLine(2)
             else:
                 #if hunt mode is not viable anymore, force switch to hunt mode brute force
                 failedAttempt += 1
@@ -796,18 +826,22 @@ def cpuAI():
             
             if rowHit <= 9 and rowHit >= 0 and colHit <= 9 and colHit >= 0:     #coord is valid
                 if playerBoard[rowHit][colHit] > -1:                            #target has not been bombed yet
-                    printLine()
+                    printLine(1)
                     if playerBoard[rowHit][colHit] > 0:                         #target has a ship
-                        print(" • Computer bombed " + str(rowDict[rowHit]) +  str(colHit) + ". It's a hit!", end=" ")
+                        print(f" • Computer bombed \033[0;30;47m{str(rowDict[rowHit])}{str(colHit)}\033[1;37;40m. It's a \033[1;31;40mhit\033[1;37;40m!", end=" ")
                         playerShipBefore = sinkShipChecker(playerBoard, 2)      #count ships before bombing
                         playerBoard[rowHit][colHit] = -2                        #ship was bombed
-                        if sinkShipChecker(playerBoard, 2) < playerShipBefore:  #compare ships after bombing
-                            print("Computer sank one of your ships!")
+                        playerShipAfter = sinkShipChecker(playerBoard, 2)       #count ships after bombing
+                        if len(playerShipAfter) < len(playerShipBefore):        #a ship has been sunk
+                            print("\033[1;31;40mComputer sank your ", end="")
+                            for ship in playerShipBefore:
+                                if ship not in playerShipAfter:
+                                    print(f"{shipDict[ship]}!\033[1;37;40m")
                         else:
                             print()
 
                     elif playerBoard[rowHit][colHit] == 0:                      #if the target has no ship
-                        print(" • Computer bombed " + str(rowDict[rowHit]) +  str(colHit) + ". It's a miss!")
+                        print(f" • Computer bombed \033[0;30;47m{str(rowDict[rowHit])}{str(colHit)}\033[1;37;40m. It's a miss!")
                         playerBoard[rowHit][colHit] = -1                        #sea was bombed
 
                         rowHit = row                                            #get the original coords
@@ -815,7 +849,7 @@ def cpuAI():
                         targetDirection += 1                                    #proceed to the next adjacent tile
                     turn += 1
                     saveBoard()
-                    printLine()
+                    printLine(2)
                 else:
                     rowHit = row                                                #get the original coords
                     colHit = col
@@ -835,13 +869,17 @@ def cpuAI():
             col = random.randint(0, 9)
 
             if playerBoard[row][col] > -1:                                  #target has not been bombed yet
-                printLine()
+                printLine(1)
                 if playerBoard[row][col] > 0:                               #target has a ship
-                    print(" • Computer bombed " + str(rowDict[row]) +  str(col) + ". It's a hit!", end=" ")
+                    print(f" • Computer bombed \033[0;30;47m{str(rowDict[row])}{str(col)}\033[1;37;40m. It's a \033[1;31;40mhit\033[1;37;40m!", end=" ")
                     playerShipBefore = sinkShipChecker(playerBoard, 2)      #count ships before bombing
                     playerBoard[row][col] = -2                              #ship was bombed
-                    if sinkShipChecker(playerBoard, 2) < playerShipBefore:  #compare ships after bombing
-                        print("Computer sank one of your ships!")
+                    playerShipAfter = sinkShipChecker(playerBoard, 2)       #count ships after bombing
+                    if len(playerShipAfter) < len(playerShipBefore):        #a ship has been sunk
+                        print("\033[1;31;40mComputer sank your ", end="")
+                        for ship in playerShipBefore:
+                            if ship not in playerShipAfter:
+                                print(f"{shipDict[ship]}!\033[1;37;40m")
                     else:
                         print()
 
@@ -851,11 +889,12 @@ def cpuAI():
                     targetDirection = -1
 
                 elif playerBoard[row][col] == 0:                            #if the target has no ship
-                    print(" • Computer bombed " + str(rowDict[row]) +  str(col) + ". It's a miss!")
+                    print(" • Computer bombed \033[0;30;47m" + str(rowDict[row]) +  str(col) + "\033[1;37;40m. It's a miss!")
                     playerBoard[row][col] = -1                              #sea was bombed
                 turn += 1
                 saveBoard()
-                printLine()
+                printLine(2)
+                
 
 #---------------------------------------------MISC FUNCTIONS
 def clearScreen():
@@ -881,18 +920,30 @@ def loading():
         print(" [" + ("█" * (i//5)) + (" " * (20-(i//5))) + "] Loading... " + str(i) + "%", end="\r")
         time.sleep(0.001)
     
-def printLine():
-    print("==================================================================================")
+def printLine(position):
+    """
+    position argument takes:
+    0 = top
+    1 = middle
+    2 = bottom
+    """
+    if position == 0:
+        print("\033[1;30;40m╔═══════════════════════════════════════════════════════════════════════════════════════╗\033[1;37;40m")
+    if position == 1:
+        print("\033[1;30;40m╠═══════════════════════════════════════════════════════════════════════════════════════╣\033[1;37;40m")
+    if position == 2:
+        print("\033[1;30;40m╚═══════════════════════════════════════════════════════════════════════════════════════╝\033[1;37;40m")
+    
 
 def printTitle():
-    print()
-    print(" ██████╗  █████╗ ████████╗████████╗██╗     ███████╗███████╗██╗  ██╗██╗██████╗ ██╗") 
-    print(" ██╔══██╗██╔══██╗╚══██╔══╝╚══██╔══╝██║     ██╔════╝██╔════╝██║  ██║██║██╔══██╗██║")    
-    print(" ██████╔╝███████║   ██║      ██║   ██║     █████╗  ███████╗███████║██║██████╔╝██║")  
-    print(" ██╔══██╗██╔══██║   ██║      ██║   ██║     ██╔══╝  ╚════██║██╔══██║██║██╔═══╝ ╚═╝")  
-    print(" ██████╔╝██║  ██║   ██║      ██║   ███████╗███████╗███████║██║  ██║██║██║     ██╗")  
-    print(" ╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝")
-    print()
+    print("\033[1;33;40m")
+    print(" ██████╗  █████╗ ████████╗████████╗██╗     ███████╗███████╗██╗  ██╗██╗██████╗ ██╗ ○") 
+    print(" ██╔══██╗██╔══██╗╚══██╔══╝╚══██╔══╝██║     ██╔════╝██╔════╝██║  ██║██║██╔══██╗██║ ◘")    
+    print(" ██████╔╝███████║   ██║      ██║   ██║     █████╗  ███████╗███████║██║██████╔╝██║ ◙")  
+    print(" ██╔══██╗██╔══██║   ██║      ██║   ██║     ██╔══╝  ╚════██║██╔══██║██║██╔═══╝ ╚═╝ ■")  
+    print(" ██████╔╝██║  ██║   ██║      ██║   ███████╗███████╗███████║██║  ██║██║██║     ██╗ ≡")  
+    print(" ╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝     ╚═╝ ♦")
+    print("\033[1;37;40m")
 
 def rowConvert(input):
     if isinstance(input, int):      #checks if input is an int, convert it to letter
@@ -904,7 +955,40 @@ def rowConvert(input):
             return output
 
 #------------------------------------DECLARE VARIABLES-----------------------------------
-#declare variables, this can be overwritten later if a savefile exists
+def resetVars():
+    #reset variables at the start of a new game
+    global gamePhase
+    global turn
+    global playerLose
+    global cpuLose
+    global stratMode
+    global targetDirection
+    global rowHit
+    global colHit
+    global row
+    global col
+    global bombs
+    global currentShip
+
+    gamePhase = 0                       #0 is prep phase, 1 is battle phase.
+    turn = random.randint(0, 1)         #declares who turns first
+
+    playerLose = False                  #both players are alive
+    cpuLose = False
+
+    stratMode = 0                       #default stratmode for AI is hunt mode
+    targetDirection = 0                 #target direction starts at 0
+
+    rowHit = 0                          #rowHit, colHit, row, and col are mostly for AI use
+    colHit = 0
+    row = 0
+    col = 0
+
+    bombs = 0                           #counts how many bombs the player has deployed
+    currentShip = 1                     #current ship for player and cpu preparation
+
+#-----------------------------------VARIABLE DECLARATION----------------------------------
+
 gamePhase = 0                       #0 is prep phase, 1 is battle phase.
 turn = random.randint(0, 1)         #declares who turns first
 
@@ -924,4 +1008,5 @@ currentShip = 1                     #current ship for player and cpu preparation
 
 #----------------------------------------MAIN GAME---------------------------------------
 mainMenu()
-mainGame()
+
+pause = input("bruh")
